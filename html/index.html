@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+ <meta charset="UTF-8"> 
+<head>
+<title>Sosialisme</title>
+<link rel="icon" 
+      type="image/png" 
+      href="/resources/hammer_and_sickle.png">
+</head>
+<body>
+<p>Spiller nå:<p>
+<p id="currentSong">-</p>
+<button onclick="next()" id="nextButton">Start</button>
+<button onclick="pause()" disabled="true" id="pauseButton">Pause</button>
+<button onclick="stop()" disabled="true" id="stopButton">Stopp</button>
+
+<script>
+var songs = ['Arbeiderungdommens marsj', 'August i -68', 'De internasjonale brigadenes sang', 'Den unge garde', 'El pueblo unido', 'Enhetsfrontsang', 'Et rødt flagg', 'Folkets store hær', 'Fram! Fram!', 'Frem kamerater', 'Hemmeleg oppmarsj', 'Herrefolkets internasjonale', 'Internasjonalen', 'Komintern', 'Kvinnenes fanesang', 'Lær av soga', 'Marsj, partisan!', 'Røde Ungdom', 'Revolusjonens røde flagg', 'Ridderslag', 'Solidaritetssang', 'Stalingrad', 'Stormkvad', 'Thällmann-kolonne', 'Vi er de mange', 'Warschawjanka'];
+var lastSong = -1;
+var nextLastSong = -1;
+var audio = null;
+
+stop();
+
+function stop() {
+	if (audio != null) audio.pause();
+	audio = null;
+	document.getElementById('currentSong').innerHTML = "-";
+	document.getElementById('nextButton').innerHTML = "Start";
+    document.getElementById('pauseButton').disabled = true;
+    document.getElementById('stopButton').disabled = true;
+}
+
+function pause() {
+	if (audio != null) {
+    	if (audio.paused) {
+        	audio.play();
+			document.getElementById('currentSong').innerHTML = songs[lastSong];
+			document.getElementById('pauseButton').innerHTML = "Pause";
+        } else {
+        	audio.pause();
+			document.getElementById('currentSong').innerHTML = songs[lastSong] + ' (pauset)';
+			document.getElementById('pauseButton').innerHTML = "Fortsett";
+        }
+    }
+}
+
+function next() {
+	if (audio != null) {
+    	audio.pause();
+    }
+	audio = getSong();
+	audio.play();
+	document.getElementById('currentSong').innerHTML = songs[lastSong];
+	document.getElementById('nextButton').innerHTML = "Neste";
+    document.getElementById('pauseButton').disabled = false; 
+    document.getElementById('stopButton').disabled = false;
+
+	audio.onended = function() {
+		next();
+	}
+}
+
+function getSong() {
+	var i = lastSong;
+	while (i == lastSong || i == nextLastSong) {
+		i = Math.floor((Math.random() * songs.length));
+	}
+    nextLastSong = lastSong;
+	lastSong = i;
+	return new Audio('http://kommunis.me/proletarmusikk/revolusjonaere_arbeidssongar/FLAC/' + songs[i] + '.flac');
+}
+</script>
+
+</body>
+</html>
